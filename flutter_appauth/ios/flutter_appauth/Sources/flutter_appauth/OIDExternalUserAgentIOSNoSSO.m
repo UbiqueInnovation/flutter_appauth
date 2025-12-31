@@ -120,10 +120,11 @@ NS_ASSUME_NONNULL_BEGIN
     if (!openedUserAgent && !UIAccessibilityIsGuidedAccessEnabled()) {
       __weak OIDExternalUserAgentIOSNoSSO *weakSelf = self;
       NSString *redirectScheme = request.redirectScheme;
-      SFAuthenticationSession *authenticationVC =
-          [[SFAuthenticationSession alloc]
-                    initWithURL:requestURL
-              callbackURLScheme:redirectScheme
+      BOOL isUniversalLink = [redirectScheme.lowercaseString isEqualToString:@"https"];
+      ASWebAuthenticationSession *authenticationVC =
+          [[ASWebAuthenticationSession alloc] 
+              initWithURL:requestURL
+              callbackURLScheme:isUniversalLink ? nil : redirectScheme
               completionHandler:^(NSURL *_Nullable callbackURL,
                                   NSError *_Nullable error) {
                 __strong OIDExternalUserAgentIOSNoSSO *strongSelf = weakSelf;

@@ -497,6 +497,17 @@ AppAuthAuthorization *authorization;
            annotation:(id)annotation {
   return [self application:application openURL:url options:@{}];
 }
+
+- (BOOL)application:(UIApplication *)application
+                continueUserActivity:(NSUserActivity *)userActivity
+                  restorationHandler:(void (^)(NSArray *))restorationHandler {
+  NSURL *URL = userActivity.webpageURL;
+  if (URL && [_currentAuthorizationFlow resumeExternalUserAgentFlowWithURL:URL]) {
+    _currentAuthorizationFlow = nil;
+    return YES;
+  }
+  return NO;
+}
 #endif
 
 #if TARGET_OS_OSX
