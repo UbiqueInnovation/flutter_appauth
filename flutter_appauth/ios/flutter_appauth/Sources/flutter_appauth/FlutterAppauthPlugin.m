@@ -499,6 +499,17 @@ AppAuthAuthorization *authorization;
 }
 #endif
 
+- (BOOL)application:(UIApplication *)application
+                continueUserActivity:(NSUserActivity *)userActivity
+                  restorationHandler:(void (^)(NSArray *))restorationHandler {
+  NSURL *URL = userActivity.webpageURL;
+  if (URL && [_currentAuthorizationFlow resumeExternalUserAgentFlowWithURL:URL]) {
+    _currentAuthorizationFlow = nil;
+    return YES;
+  }
+  return NO;
+}
+
 #if TARGET_OS_OSX
 - (void)handleGetURLEvent:(NSAppleEventDescriptor *)event
            withReplyEvent:(NSAppleEventDescriptor *)replyEvent {
